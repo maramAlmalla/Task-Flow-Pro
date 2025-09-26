@@ -1,0 +1,199 @@
+Title:
+Create a Flutter MVVM + Clean Architecture To-Do App (Riverpod, Hive, Notifications, Calendar, Notes, Animations, i18n, Theme Selection)
+
+Goal:
+Create a Flutter project scaffold that implements MVVM + Clean Architecture for a To-Do application. The scaffold must be production-ready as a starting skeleton and include the features, structure, and files described below so Replit (or an automated generator) can create the entire project automatically.
+
+Core requirements:
+- State management: flutter_riverpod (v2 style)
+- Local persistence: hive + hive_flutter (Task model with TypeAdapter)
+- Notifications: flutter_local_notifications + timezone (native; guarded on Web)
+- Calendar UI: table_calendar
+- Animations: lottie for splash & onboarding
+- Task actions: flutter_slidable
+- Localization: easy_localization for Arabic (RTL) and English
+- Theme selection: Light / Dark / System — chosen by user AFTER onboarding and persisted
+- DI: clear provider/DI root: lib/core/di/di.dart
+- Onboarding (landing) pages + Splash with animated transition
+- UI: Tasks CRUD (create/read/update/delete), multiple lists support, priorities (High/Medium/Low), reminders scheduling
+- Code must include English comments explaining responsibilities and mapping to Clean Architecture
+- Include scripts for setup & run on Replit (Web)
+- README must include Android/iOS notification setup instructions
+- Create placeholder Lottie & translation files automatically
+
+Assumptions:
+- Use a Flutter stable SDK version compatible with listed packages.
+- The generated project must run on Web (Replit) for UI and animations; native-only features (notifications) should be present but guarded for Web.
+- Use Hive for settings (theme, onboarding flag, locale) and tasks.
+- Provide minimal but functional implementations (skeleton app that demonstrates flows).
+
+Project file tree to create (exact structure):
+project_root/
+├─ android/
+├─ ios/
+├─ lib/
+│  ├─ core/
+│  │  ├─ errors/
+│  │  │   └─ exceptions.dart
+│  │  ├─ init/
+│  │  │   └─ app_init.dart
+│  │  ├─ notifications/
+│  │  │   └─ notifications_service.dart
+│  │  ├─ di/
+│  │  │   └─ di.dart
+│  │  └─ utils/
+│  │       └─ validators.dart
+│  ├─ features/
+│  │  ├─ tasks/
+│  │  │  ├─ data/
+│  │  │  │  ├─ datasources/
+│  │  │  │  │  └─ task_local_data_source.dart
+│  │  │  │  ├─ models/
+│  │  │  │  │  └─ task_model.dart
+│  │  │  │  └─ repositories_impl/
+│  │  │  │     └─ task_repository_impl.dart
+│  │  │  ├─ domain/
+│  │  │  │  ├─ entities/
+│  │  │  │  │  └─ task.dart
+│  │  │  │  ├─ repositories/
+│  │  │  │  │  └─ task_repository.dart
+│  │  │  │  └─ usecases/
+│  │  │  │     ├─ add_task_usecase.dart
+│  │  │  │     ├─ get_tasks_usecase.dart
+│  │  │  │     ├─ update_task_usecase.dart
+│  │  │  │     └─ delete_task_usecase.dart
+│  │  │  └─ presentation/
+│  │  │     ├─ controllers/
+│  │  │     │  └─ task_list_notifier.dart
+│  │  │     ├─ pages/
+│  │  │     │  ├─ tasks_page.dart
+│  │  │     │  ├─ add_edit_task_page.dart
+│  │  │     │  └─ task_detail_page.dart
+│  │  │     └─ widgets/
+│  │  │        └─ task_card.dart
+│  │  ├─ calendar/
+│  │  │  └─ presentation/pages/calendar_page.dart
+│  │  ├─ notes/
+│  │  │  └─ (notes scaffold - model, pages, controllers)
+│  │  └─ reminders/
+│  │     └─ (reminder usecases/controllers)
+│  ├─ features/settings/
+│  │  └─ presentation/pages/theme_selection_page.dart
+│  ├─ services/
+│  └─ main.dart
+├─ assets/
+│  ├─ lottie/            (create placeholders: splash.json, onboard1.json, onboard2.json)
+│  ├─ translations/      (create placeholders: en.json, ar.json)
+│  └─ images/
+├─ scripts/
+│  └─ setup.sh
+├─ README.md
+└─ pubspec.yaml
+
+Files & behavior requirements (detailed):
+
+1) pubspec.yaml
+- Add dependencies:
+  flutter_riverpod, hive, hive_flutter, dio, flutter_local_notifications, timezone, table_calendar, lottie, flutter_slidable, easy_localization, flutter_localizations
+- Add dev_dependencies:
+  build_runner, hive_generator
+- Add assets:
+  - assets/lottie/
+  - assets/translations/
+  - assets/images/
+
+2) lib/main.dart
+- Use `WidgetsFlutterBinding.ensureInitialized()` and `await EasyLocalization.ensureInitialized()`; call `await AppInit.init()` before runApp.
+- Wrap app with `EasyLocalization` and `ProviderScope`.
+- Configure `MaterialApp`:
+  - `locale: context.locale`
+  - `localizationsDelegates: context.localizationDelegates`
+  - `supportedLocales: context.supportedLocales`
+  - `themeMode` read from `themeModeProvider` (persisted value)
+- Flow: Splash -> Onboarding (PageView) -> ThemeSelectionPage -> Home (TasksPage)
+- Splash uses `Lottie.asset('assets/lottie/splash.json')` or `ScaleTransition` if Lottie fails.
+
+3) Localization (easy_localization)
+- Create `assets/translations/en.json` and `assets/translations/ar.json` placeholders with essential keys:
+  - app_title, onboarding.title1/subtitle1/... , theme.choose/light/dark/system, common.get_started/skip, tasks.* etc.
+- Use `.tr()` in widgets (e.g., `Text('app_title'.tr())`).
+- Ensure RTL works automatically when `context.locale` is Arabic.
+
+4) Theme selection & settings persistence
+- After onboarding, show `ThemeSelectionPage` (`lib/features/settings/presentation/pages/theme_selection_page.dart`) with options: Light, Dark, System.
+- Persist selection in `settings_box` (Hive) keys:
+  - `'theme_mode'` -> `'light' | 'dark' | 'system'`
+  - `'onboarding_completed'` -> `true`
+  - optionally `'locale'` -> `'en' | 'ar'`
+- Provide a `themeModeProvider` (StateNotifier or StateProvider) that reads initial value at startup (AppInit) and updates `MaterialApp.themeMode` live.
+
+5) Hive & AppInit
+- `lib/core/init/app_init.dart` should:
+  - call `await Hive.initFlutter();`
+  - register TaskModel adapter (manual adapter class or generated)
+  - open boxes: `tasks_box` (TaskModel), `settings_box`
+  - read saved theme & locale values and set providers accordingly
+  - initialize NotificationsService (`await NotificationsService().init();`)
+  - optionally insert 5 sample tasks on first run for dev/demo convenience
+
+6) NotificationsService
+- `lib/core/notifications/notifications_service.dart`:
+  - Singleton wrapper for `FlutterLocalNotificationsPlugin`
+  - `init()` initializes timezone (`tz.initializeTimeZones()`), sets up plugin and channels
+  - `scheduleNotification(int id, String title, String body, tz.TZDateTime dateTime)` method
+  - Guard native-only code with `kIsWeb` (skip scheduling on Web)
+  - Document Android/iOS native setup needed in README
+
+7) Task entity & model (Hive)
+- `lib/features/tasks/domain/entities/task.dart` — immutable Task entity with fields:
+  - `String id`, `String title`, `String? description`, `DateTime? dueDate`, `int priority` (0 low,1 med,2 high), `bool done`, `String? listId`
+  - include `copyWith()` and to/from mapping if needed
+- `lib/features/tasks/data/models/task_model.dart` — Hive TypeAdapter (manual or generated) with `toEntity()` and `fromEntity()`.
+
+8) Data source & repository
+- `TaskLocalDataSource` uses Hive box to implement CRUD methods: `getAllTasks()`, `addTask(TaskModel)`, `updateTask(TaskModel)`, `deleteTask(id)`.
+- `TaskRepositoryImpl` implements `TaskRepository` (domain interface) mapping models ↔ entities.
+
+9) UseCases
+- Implement `GetTasksUseCase`, `AddTaskUseCase`, `UpdateTaskUseCase`, `DeleteTaskUseCase` — simple wrappers calling the repository.
+
+10) Presentation / ViewModel
+- `TaskListNotifier extends StateNotifier<TaskListState>`:
+  - `TaskListState { bool isLoading; List<Task> tasks; String? error; }`
+  - methods: `loadTasks()`, `createTask(Task)`, `editTask(Task)`, `removeTask(String id)`, `toggleDone(String id)`
+  - Expose `taskListNotifierProvider` (StateNotifierProvider)
+
+11) UI pages & widgets
+- `TasksPage` (ConsumerStatefulWidget):
+  - calls `loadTasks()` in `initState()`, uses `RefreshIndicator`, shows list of `TaskCard`s or loading / error states
+- `AddEditTaskPage`:
+  - form with title, description, date/time picker, priority selector, list chooser
+  - validate inputs; on save: schedule notification if dueDate set (via NotificationsService)
+- `TaskCard`:
+  - uses `Slidable` actions (Edit/Delete)
+  - shows Checkbox for done, priority chip, title/subtitle
+- `CalendarPage`:
+  - `TableCalendar` showing tasks grouped by date; taps show tasks for that day
+- `OnboardingPage`:
+  - `PageView` with 3 pages, uses `Lottie` assets (`assets/lottie/onboard1.json`, etc.)
+  - final action navigates to `ThemeSelectionPage`
+
+12) DI (lib/core/di/di.dart)
+- Register providers:
+  - `tasksBoxProvider` (Box<TaskModel>)
+  - `settingsBoxProvider` (Box)
+  - `taskLocalDataSourceProvider`
+  - `taskRepositoryProvider`
+  - `getTasksUseCaseProvider`, `addTaskUseCaseProvider`, ...
+  - `taskListNotifierProvider`
+  - `themeModeProvider`
+  - `localeProvider` (optional)
+
+13) Scripts
+- `scripts/setup.sh`:
+  ```bash
+  #!/usr/bin/env bash
+  flutter pub get
+  # Optional: run codegen for Hive adapters if used
+  # flutter pub run build_runner build --delete-conflicting-outputs
+  echo "Setup complete. Run with: flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000"
