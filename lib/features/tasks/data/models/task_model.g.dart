@@ -6,7 +6,7 @@ part of 'task_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TaskModelAdapter extends TypeAdapter<TaskModel> {
+class TaskModelAdapterrr extends TypeAdapter<TaskModel> {
   @override
   final int typeId = 0;
 

@@ -5,21 +5,16 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
 /// Service responsible for handling local notifications
-/// This service is guarded for web platform and provides notification scheduling
-/// for task reminders and due dates
 class NotificationsService {
   static final NotificationsService _instance = NotificationsService._internal();
   factory NotificationsService() => _instance;
   NotificationsService._internal();
 
-  final FlutterLocalNotificationsPlugin _notificationsPlugin = 
-      FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
 
   bool _isInitialized = false;
 
   /// Initialize the notifications service
-  /// Sets up notification channels and timezone data
-  /// Skipped on web platform as notifications are not supported
   Future<void> init() async {
     if (kIsWeb) {
       print('Notifications are not supported on web platform');
@@ -29,18 +24,17 @@ class NotificationsService {
     try {
       // Initialize timezone data
       tz.initializeTimeZones();
-      
+
       // Set local timezone
       final timeZoneName = await _getTimeZoneName();
       tz.setLocalLocation(tz.getLocation(timeZoneName));
 
       // Android initialization settings
-      const AndroidInitializationSettings androidSettings = 
+      const AndroidInitializationSettings androidSettings =
           AndroidInitializationSettings('@mipmap/ic_launcher');
 
       // iOS initialization settings
-      const DarwinInitializationSettings iosSettings = 
-          DarwinInitializationSettings(
+      const DarwinInitializationSettings iosSettings = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
         requestSoundPermission: true,
@@ -70,18 +64,11 @@ class NotificationsService {
     }
   }
 
-  /// Get the device timezone name
-  /// Returns UTC as fallback if unable to determine
   Future<String> _getTimeZoneName() async {
-    try {
-      // For production, you might want to use a more robust timezone detection
-      return 'UTC'; // Simplified for this example
-    } catch (e) {
-      return 'UTC';
-    }
+    // Simplified: always returns UTC; replace with proper detection if needed
+    return 'UTC';
   }
 
-  /// Create notification channel for Android
   Future<void> _createNotificationChannel() async {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'todo_reminders',
@@ -92,27 +79,19 @@ class NotificationsService {
     );
 
     await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
   }
 
-  /// Handle notification tap events
   void _onNotificationTapped(NotificationResponse response) {
     final payload = response.payload;
     if (payload != null) {
       print('Notification tapped with payload: $payload');
-      // Handle navigation to specific task or page based on payload
-      // This would typically involve navigation service or global navigator
+      // هنا يمكن التعامل مع التنقل داخل التطبيق حسب payload
     }
   }
 
-  /// Schedule a notification for a specific date and time
-  /// [id] - Unique notification ID
-  /// [title] - Notification title
-  /// [body] - Notification body text
-  /// [scheduledDate] - When to show the notification
-  /// [payload] - Optional data to pass when notification is tapped
+  /// Schedule a notification at a specific date & time
   Future<void> scheduleNotification({
     required int id,
     required String title,
@@ -126,12 +105,8 @@ class NotificationsService {
     }
 
     try {
-      final tz.TZDateTime scheduledTZDate = tz.TZDateTime.from(
-        scheduledDate,
-        tz.local,
-      );
+      final tz.TZDateTime scheduledTZDate = tz.TZDateTime.from(scheduledDate, tz.local);
 
-      // Check if the scheduled date is in the future
       if (scheduledTZDate.isBefore(tz.TZDateTime.now(tz.local))) {
         print('Cannot schedule notification in the past');
         return;
@@ -164,8 +139,7 @@ class NotificationsService {
         body,
         scheduledTZDate,
         notificationDetails,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // إلزامي بالإصدار الجديد
         payload: payload,
       );
 
@@ -182,10 +156,7 @@ class NotificationsService {
     required String body,
     String? payload,
   }) async {
-    if (kIsWeb || !_isInitialized) {
-      print('Skipping immediate notification (Web platform or not initialized)');
-      return;
-    }
+    if (kIsWeb || !_isInitialized) return;
 
     try {
       const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
@@ -222,11 +193,8 @@ class NotificationsService {
     }
   }
 
-  /// Cancel a scheduled notification
   Future<void> cancelNotification(int id) async {
-    if (kIsWeb || !_isInitialized) {
-      return;
-    }
+    if (kIsWeb || !_isInitialized) return;
 
     try {
       await _notificationsPlugin.cancel(id);
@@ -236,11 +204,8 @@ class NotificationsService {
     }
   }
 
-  /// Cancel all scheduled notifications
   Future<void> cancelAllNotifications() async {
-    if (kIsWeb || !_isInitialized) {
-      return;
-    }
+    if (kIsWeb || !_isInitialized) return;
 
     try {
       await _notificationsPlugin.cancelAll();
@@ -250,16 +215,13 @@ class NotificationsService {
     }
   }
 
-  /// Request notification permissions (iOS)
+  /// Request notification permissions (iOS only)
   Future<bool> requestPermissions() async {
-    if (kIsWeb) {
-      return false;
-    }
+    if (kIsWeb) return false;
 
     try {
       final result = await _notificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
             alert: true,
             badge: true,

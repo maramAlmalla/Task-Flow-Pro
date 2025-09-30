@@ -205,7 +205,7 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentTheme = ref.watch(themeModeProvider);
     final currentLocale = ref.watch(localeProvider);
-    final themeNotifier = ref.read(themeModeProvider.notifier);
+    // final themeNotifier = ref.read(themeModeProvider.notifier);
     final localeNotifier = ref.read(localeProvider.notifier);
 
     return Scaffold(
@@ -219,7 +219,9 @@ class SettingsPage extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.palette),
-              title: Text('theme'.tr()),
+              title: Text(
+                (currentTheme is String ? currentTheme : currentTheme.toString()).tr(),
+              ),
               subtitle: Text(currentTheme.tr()),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
@@ -231,9 +233,9 @@ class SettingsPage extends ConsumerWidget {
               },
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Language setting
           Card(
             child: ListTile(
@@ -241,20 +243,25 @@ class SettingsPage extends ConsumerWidget {
               title: Text('language'.tr()),
               subtitle: Text(currentLocale == 'ar' ? 'العربية' : 'English'),
               trailing: Switch(
-                value: currentLocale == 'ar',
-                onChanged: (value) async {
-                  final newLocale = value ? 'ar' : 'en';
-                  await localeNotifier.setLocale(newLocale);
-                  if (context.mounted) {
-                    await context.setLocale(Locale(newLocale));
-                  }
-                },
-              ),
+  value: context.locale.languageCode == 'ar',
+  onChanged: (value) async {
+    final newLocale = value ? const Locale('ar', 'SA') : const Locale('en', 'US');
+    
+    if (context.mounted) {
+      await context.setLocale(newLocale);
+    }
+
+   
+    await localeNotifier.setLocale(newLocale.toString());
+  },
+),
+
+
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // App info
           Card(
             child: Padding(
@@ -265,8 +272,8 @@ class SettingsPage extends ConsumerWidget {
                   Text(
                     'app_info'.tr(),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text('Version: 1.0.0'),
