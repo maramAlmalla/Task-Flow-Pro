@@ -6,6 +6,8 @@ import 'core/init/app_init.dart';
 import 'core/di/di.dart';
 import 'features/tasks/presentation/pages/tasks_page.dart';
 import 'features/calendar/presentation/pages/calendar_page.dart';
+import 'features/reminders/presentation/pages/reminders_page.dart';
+import 'features/notes/presentation/pages/notes_page.dart';
 import 'features/settings/presentation/pages/theme_selection_page.dart';
 
 /// Main entry point for the Flutter Todo App
@@ -161,6 +163,8 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   final List<Widget> _pages = [
     const TasksPage(),
+    const RemindersPage(),
+    const NotesPage(),
     const CalendarPage(),
     const SettingsPage(),
   ];
@@ -182,6 +186,14 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
           BottomNavigationBarItem(
             icon: const Icon(Icons.task_alt),
             label: 'tasks'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.alarm),
+            label: 'reminders'.tr(),
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.note),
+            label: 'notes'.tr(),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.calendar_today),

@@ -1,55 +1,46 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task_model.dart';
+part of 'note_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TaskModelAdapter extends TypeAdapter<TaskModel> {
+class NoteModelAdapter extends TypeAdapter<NoteModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 2;
 
   @override
-  TaskModel read(BinaryReader reader) {
+  NoteModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TaskModel(
+    return NoteModel(
       id: fields[0] as String,
       title: fields[1] as String,
-      description: fields[2] as String?,
-      dueDate: fields[3] as DateTime?,
-      priority: fields[4] as int,
-      done: fields[5] as bool,
-      listId: fields[6] as String?,
-      createdAt: fields[7] as DateTime,
-      updatedAt: fields[8] as DateTime?,
+      content: fields[2] as String,
+      isImportant: fields[3] as bool,
+      createdAt: fields[4] as DateTime,
+      updatedAt: fields[5] as DateTime?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TaskModel obj) {
+  void write(BinaryWriter writer, NoteModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.description)
+      ..write(obj.content)
       ..writeByte(3)
-      ..write(obj.dueDate)
+      ..write(obj.isImportant)
       ..writeByte(4)
-      ..write(obj.priority)
-      ..writeByte(5)
-      ..write(obj.done)
-      ..writeByte(6)
-      ..write(obj.listId)
-      ..writeByte(7)
       ..write(obj.createdAt)
-      ..writeByte(8)
+      ..writeByte(5)
       ..write(obj.updatedAt);
   }
 
@@ -59,7 +50,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TaskModelAdapter &&
+      other is NoteModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

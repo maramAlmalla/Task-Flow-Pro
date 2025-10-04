@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../notifications/notifications_service.dart';
 import '../../features/tasks/data/models/task_model.dart';
+import '../../features/reminders/data/models/reminder_model.dart';
+import '../../features/notes/data/models/note_model.dart';
 
 /// Application initialization class
 /// Handles all startup operations including Hive setup, notifications,
@@ -43,6 +45,16 @@ class AppInit {
       Hive.registerAdapter(TaskModelAdapter());
     }
 
+    // Register the ReminderModel adapter
+    if (!Hive.isAdapterRegistered(1)) {
+      Hive.registerAdapter(ReminderModelAdapter());
+    }
+
+    // Register the NoteModel adapter
+    if (!Hive.isAdapterRegistered(2)) {
+      Hive.registerAdapter(NoteModelAdapter());
+    }
+
     // Open required boxes
     await _openHiveBoxes();
   }
@@ -52,6 +64,16 @@ class AppInit {
     // Open tasks box for storing TaskModel objects
     if (!Hive.isBoxOpen('tasks_box')) {
       await Hive.openBox<TaskModel>('tasks_box');
+    }
+
+    // Open reminders box for storing ReminderModel objects
+    if (!Hive.isBoxOpen('reminders_box')) {
+      await Hive.openBox<ReminderModel>('reminders_box');
+    }
+
+    // Open notes box for storing NoteModel objects
+    if (!Hive.isBoxOpen('notes_box')) {
+      await Hive.openBox<NoteModel>('notes_box');
     }
 
     // Open settings box for storing app preferences

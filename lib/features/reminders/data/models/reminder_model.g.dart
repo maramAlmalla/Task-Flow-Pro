@@ -1,55 +1,49 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task_model.dart';
+part of 'reminder_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TaskModelAdapter extends TypeAdapter<TaskModel> {
+class ReminderModelAdapter extends TypeAdapter<ReminderModel> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  TaskModel read(BinaryReader reader) {
+  ReminderModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TaskModel(
+    return ReminderModel(
       id: fields[0] as String,
-      title: fields[1] as String,
-      description: fields[2] as String?,
-      dueDate: fields[3] as DateTime?,
-      priority: fields[4] as int,
-      done: fields[5] as bool,
-      listId: fields[6] as String?,
-      createdAt: fields[7] as DateTime,
-      updatedAt: fields[8] as DateTime?,
+      name: fields[1] as String,
+      time: fields[2] as DateTime,
+      recurrence: fields[3] as String,
+      notificationsEnabled: fields[4] as bool,
+      createdAt: fields[5] as DateTime,
+      updatedAt: fields[6] as DateTime?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, TaskModel obj) {
+  void write(BinaryWriter writer, ReminderModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.title)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.description)
+      ..write(obj.time)
       ..writeByte(3)
-      ..write(obj.dueDate)
+      ..write(obj.recurrence)
       ..writeByte(4)
-      ..write(obj.priority)
+      ..write(obj.notificationsEnabled)
       ..writeByte(5)
-      ..write(obj.done)
-      ..writeByte(6)
-      ..write(obj.listId)
-      ..writeByte(7)
       ..write(obj.createdAt)
-      ..writeByte(8)
+      ..writeByte(6)
       ..write(obj.updatedAt);
   }
 
@@ -59,7 +53,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TaskModelAdapter &&
+      other is ReminderModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
