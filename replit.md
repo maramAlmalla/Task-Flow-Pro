@@ -2,6 +2,17 @@
 
 This is a Flutter MVVM + Clean Architecture Todo App that demonstrates production-ready mobile development patterns. The application implements comprehensive task management with features like priority levels, due dates, calendar integration, local notifications, and internationalization support for English and Arabic. Built with Clean Architecture principles, it provides a clear separation between domain logic, data persistence, and presentation layers while maintaining MVVM patterns for reactive state management.
 
+## Replit Setup
+
+Successfully configured for Replit environment (October 2025):
+- **Flutter Version**: 3.32.0
+- **Dart Version**: 3.8.0
+- **Web Platform**: Runs on port 5000 with release mode for optimal performance
+- **Build Configuration**: Uses `flutter run -d web-server --web-hostname 0.0.0.0 --web-port 5000 --release`
+- **Deployment**: Configured for autoscale deployment with web build
+- **Cache Control**: Meta tags added to web/index.html to prevent caching issues
+- **Known Limitations**: Notifications are not supported on web platform (gracefully degrades)
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
