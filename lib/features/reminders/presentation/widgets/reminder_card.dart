@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../domain/entities/reminder.dart';
-import '../../../core/di/di.dart';
+import '../../../../core/di/di.dart';
 import '../pages/add_edit_reminder_page.dart';
 
 class ReminderCard extends ConsumerWidget {

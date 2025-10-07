@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../domain/entities/reminder.dart';
-import '../../../core/di/di.dart';
+import '../../../../core/di/di.dart';
 
 class AddEditReminderPage extends ConsumerStatefulWidget {
   final Reminder? reminder;

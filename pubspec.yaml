@@ -36,6 +36,15 @@ dependencies:
   
   # Localization
   easy_localization: ^3.0.3
+  
+  # Supabase
+  supabase_flutter: ^2.0.0
+  
+  # Shared Preferences
+  shared_preferences: ^2.2.2
+  
+  # Charts
+  fl_chart: ^0.66.0
 
 dev_dependencies:
   flutter_test:

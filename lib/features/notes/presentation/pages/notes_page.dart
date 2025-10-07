@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../../core/di/di.dart';
+import '../../../../core/di/di.dart';
 import '../widgets/note_card.dart';
 import 'add_edit_note_page.dart';
 
