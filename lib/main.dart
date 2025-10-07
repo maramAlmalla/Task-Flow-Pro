@@ -4,11 +4,15 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'core/init/app_init.dart';
 import 'core/di/di.dart';
+import 'core/supabase/supabase_config.dart';
 import 'features/tasks/presentation/pages/tasks_page.dart';
 import 'features/calendar/presentation/pages/calendar_page.dart';
 import 'features/reminders/presentation/pages/reminders_page.dart';
 import 'features/notes/presentation/pages/notes_page.dart';
 import 'features/settings/presentation/pages/theme_selection_page.dart';
+import 'features/pomodoro/presentation/pages/pomodoro_page.dart';
+import 'features/screen_time/presentation/pages/screen_time_page.dart';
+import 'features/reminders_supabase/presentation/pages/reminders_supabase_page.dart';
 
 /// Main entry point for the Flutter Todo App
 /// Implements MVVM + Clean Architecture with Riverpod state management
@@ -21,6 +25,15 @@ void main() async {
   
   // Initialize the application (Hive, notifications, etc.)
   await AppInit.init();
+  
+  // Initialize Supabase
+  try {
+    await SupabaseConfig.initialize();
+  } catch (e) {
+    if (kDebugMode) {
+      print('Supabase initialization warning: $e');
+    }
+  }
 
   // Run the app
   runApp(
@@ -163,7 +176,9 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
 
   final List<Widget> _pages = [
     const TasksPage(),
-    const RemindersPage(),
+    const PomodoroPage(),
+    const ScreenTimePage(),
+    const RemindersSupabasePage(),
     const NotesPage(),
     const CalendarPage(),
     const SettingsPage(),
@@ -187,9 +202,17 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
             icon: const Icon(Icons.task_alt),
             label: 'tasks'.tr(),
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.alarm),
-            label: 'reminders'.tr(),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.timer),
+            label: 'Pomodoro',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.phone_android),
+            label: 'Screen Time',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.alarm),
+            label: 'Reminders',
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.note),
