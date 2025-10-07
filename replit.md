@@ -1,6 +1,6 @@
 # Overview
 
-This is a Flutter MVVM + Clean Architecture Todo App that demonstrates production-ready mobile development patterns. The application implements comprehensive task management with features like priority levels, due dates, calendar integration, local notifications, and internationalization support for English and Arabic. Built with Clean Architecture principles, it provides a clear separation between domain logic, data persistence, and presentation layers while maintaining MVVM patterns for reactive state management.
+This is a Flutter MVVM + Clean Architecture Todo App with productivity features including Pomodoro timer, screen time tracking, and Supabase-integrated reminders. The application implements comprehensive task management with priority levels, due dates, calendar integration, local notifications, and internationalization support for English and Arabic. Built with Clean Architecture principles, it provides a clear separation between domain logic, data persistence, and presentation layers while maintaining MVVM patterns for reactive state management.
 
 ## Replit Setup
 
@@ -57,8 +57,40 @@ Local notifications implementation with platform-specific handling:
 ## Navigation and User Flow
 - Splash screen with animated transitions using Lottie
 - Onboarding flow for first-time users with feature introduction
-- Bottom navigation for main app sections (Tasks, Calendar, Settings)
+- Bottom navigation with 7 sections:
+  - Tasks: Main todo list with local Hive storage
+  - Pomodoro: 25-minute focus timer with 5-minute breaks
+  - Screen Time: Daily usage tracking with weekly charts
+  - Reminders: Supabase-powered reminders with cloud sync
+  - Notes: Quick note-taking feature
+  - Calendar: Calendar view of tasks and events
+  - Settings: Theme and preferences management
 - Modal sheets and dialogs for task creation and editing workflows
+
+## New Features (October 2025)
+
+### Pomodoro Timer
+- 25-minute focus sessions with 5-minute breaks
+- Play/Pause/Reset controls
+- Local notifications when timer completes
+- Calm design supporting dark/light modes
+- Visual countdown display with circular timer
+
+### Screen Time Tracker
+- Automatic daily usage tracking
+- Persistent storage using SharedPreferences
+- Weekly activity chart with fl_chart
+- Real-time session monitoring
+- Usage statistics with hours and minutes display
+
+### Supabase Reminders
+- Cloud-based reminder storage with Supabase
+- Full CRUD operations (Create, Read, Update, Delete)
+- Recurrence options: None, Daily, Weekly, Monthly
+- Anonymous authentication for quick access
+- Checkbox to mark reminders as done
+- Row-level security policies for data protection
+- Real-time sync across devices
 
 # External Dependencies
 
@@ -74,11 +106,19 @@ Local notifications implementation with platform-specific handling:
 - **hive**: NoSQL local database for task and settings persistence
 - **hive_flutter**: Flutter integration for Hive database
 - **hive_generator**: Code generation for TypeAdapters
+- **shared_preferences**: Key-value storage for screen time tracking
+
+## Cloud Storage & Backend
+- **supabase_flutter**: Supabase client for cloud database and authentication
+- **postgrest**: PostgreSQL REST client for Supabase
+- **realtime_client**: Real-time subscription support
+- **gotrue**: Authentication and user management
 
 ## UI Components & Animations
 - **lottie**: Vector animations for splash screen and onboarding
 - **table_calendar**: Calendar widget for task date visualization
 - **flutter_slidable**: Swipe actions for task list items
+- **fl_chart**: Beautiful charts for screen time visualization
 - **material_design**: Material 3 design system implementation
 
 ## Notifications & Platform Services
@@ -98,3 +138,15 @@ Local notifications implementation with platform-specific handling:
 - Native Android/iOS notification channels configured
 - Web platform compatibility with graceful feature degradation
 - Platform-specific permission handling for notification access
+
+## Environment Configuration
+- **SUPABASE_URL**: Supabase project URL (configured via Replit Secrets)
+- **SUPABASE_ANON_KEY**: Supabase anonymous key (configured via Replit Secrets)
+- Credentials passed to Flutter via --dart-define flags during build
+
+## Supabase Database Setup
+The reminders feature requires a Supabase database table. Run the SQL in `supabase_setup.sql`:
+1. Go to your Supabase project dashboard
+2. Navigate to SQL Editor
+3. Copy and execute the SQL from `supabase_setup.sql`
+4. This creates the reminders table with Row Level Security policies
